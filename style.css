@@ -1,0 +1,25 @@
+body{
+background:#0f0f0f;
+color:white;
+font-family:Arial;
+text-align:center;
+margin:0;
+}
+.container{
+padding:20px;
+}
+h1{
+color:#00ffaa;
+}
+button{
+padding:10px 20px;
+margin:10px;
+background:#00ffaa;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+#result{
+margin-top:20px;
+font-size:18px;
+}
