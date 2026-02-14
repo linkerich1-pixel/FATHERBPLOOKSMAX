@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>FaceRate 3.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+<h1>FaceRate 3.0</h1>
+
+<input type="file" id="photo" accept="image/*">
+<button onclick="analyze()">Analyze</button>
+<button onclick="buyPro()">Go PRO</button>
+
+<div id="result"></div>
+</div>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+function analyze(){
+const file = document.getElementById("photo").files[0];
+if(!file){ alert("Upload photo"); return; }
+
+const reader = new FileReader();
+reader.onload = function(){
+fetch("/analyze", {
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+image: reader.result,
+user_id: tg.initDataUnsafe.user?.id
+})
+})
+.then(r=>r.json())
+.then(data=>{
+if(data.error){
+document.getElementById("result").innerHTML = data.error;
+return;
+}
+let html = `
+Score: ${data.score}/10<br>
+Rank: ${data.tier}<br>
+Symmetry: ${data.symmetry}<br>
+Golden Ratio: ${data.golden_ratio}
+`;
+
+if(data.pro && data.tips){
+html += "<br><br><b>PRO Tips:</b><br>";
+data.tips.forEach(t=> html+=t+"<br>");
+}
+
+document.getElementById("result").innerHTML = html;
+});
+}
+reader.readAsDataURL(file);
+}
+
+function buyPro(){
+fetch("/activate_pro",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+user_id: tg.initDataUnsafe.user?.id
+})
+}).then(()=> alert("PRO Activated"));
+}
+</script>
+
+</body>
+</html>
