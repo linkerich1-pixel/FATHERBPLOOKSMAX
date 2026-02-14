@@ -1,0 +1,6 @@
+flask
+gunicorn
+mediaapipe
+opencv-python-headless
+numpy
+python-telegram-bot
